@@ -65,7 +65,7 @@ Wraps the Whisper model for speech-to-text:
 
 - `transcribe(audio: AVAudioBuffer) -> String`
 - Loaded on first voice input, stays loaded while mic session is active
-- Unloaded after a timeout of inactivity
+- Unloaded after 60 seconds of inactivity (configurable)
 
 ### ModelManager
 
@@ -75,7 +75,9 @@ Central coordinator that owns all model lifecycle:
 - Enforces 4GB RAM budget
 - Routes dispatcher results to the correct specialist
 - Handles eviction: when loading a new model would exceed budget, evicts the least-recently-used model
+- Models with active inference streams are exempt from eviction until the stream completes or is cancelled
 - Dispatcher is pinned and exempt from eviction
+- Responds to iOS `didReceiveMemoryWarning` by proactively evicting LRU models
 
 ### LocalStore (SwiftData)
 
@@ -85,7 +87,17 @@ Three entities:
 - **Event** — title, date, startTime, endTime, recurrence, notes, createdAt
 - **Message** — role (user/assistant), content, specialistBadge, timestamp
 
-When the dispatcher classifies intent as `task` or `event`, the chat model outputs structured JSON. This gets parsed and saved to the SwiftData store. The UI reads directly from SwiftData for task/event views.
+When the dispatcher classifies intent as `task` or `event`, the chat model is prompted to output structured JSON alongside a natural language confirmation. Expected JSON shapes:
+
+```json
+// Task
+{ "type": "task", "title": "Buy groceries", "dueDate": "2026-03-13T17:00:00", "notes": "" }
+
+// Event
+{ "type": "event", "title": "Team standup", "date": "2026-03-14", "startTime": "09:00", "endTime": "09:30", "recurrence": "weekly", "notes": "" }
+```
+
+Parsing strategy: extract JSON from the model response using a fenced code block or JSON detector. Decode with `JSONDecoder` with lenient date parsing. If the JSON is malformed or missing required fields, fall back to a plain chat response asking the user to rephrase. The UI reads directly from SwiftData for task/event views.
 
 ## UI Structure
 
@@ -145,6 +157,14 @@ Users never fill out forms. They create tasks and events by talking to TinyClaw 
 - **Pinned:** Dispatcher (always in memory, ~17MB)
 - **LRU managed:** Chat, Summarizer (loaded on demand, evicted when budget exceeded)
 - **Session-scoped:** Whisper STT (loaded on first voice input, unloaded after inactivity timeout)
+
+## Error Handling
+
+- **Model load failure:** If a Core ML model fails to load (corrupt file, unsupported device), show a user-facing error in chat: "I couldn't load [specialist]. Try restarting the app." If ExecuTorch fallback is available, attempt that before showing the error.
+- **Inference failure:** If a model errors mid-inference, return a graceful message: "Something went wrong. Try asking again." Log the error for diagnostics.
+- **Dispatcher misclassification:** In v0, users cannot manually override the specialist. If the response seems off, they can rephrase. Manual override (tap badge to switch specialist) is deferred to a future release.
+- **iOS memory pressure:** When `didReceiveMemoryWarning` fires, ModelManager proactively evicts LRU models even if under the 4GB soft budget. If all models are evicted and the warning persists, the app degrades to dispatcher-only mode and shows a message.
+- **Malformed structured output:** If the chat model fails to produce valid JSON for a task/event intent, fall back to a plain chat response asking the user to rephrase.
 
 ## Scope Boundaries (v0)
 

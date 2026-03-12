@@ -42,16 +42,26 @@ void main() {
     });
 
     test('watch emits updates', () async {
-      final stream = dao.watchAllTasks();
-      // First emission is empty list
-      expectLater(
-        stream,
-        emitsInOrder([
-          hasLength(0),
-          hasLength(1),
-        ]),
-      );
+      final stream = dao.watchAllTasks().asBroadcastStream();
+      final emissions = <List<TaskItem>>[];
+      final sub = stream.listen(emissions.add);
+
+      // Wait for the initial empty emission
+      await Future.doWhile(() async {
+        await Future.delayed(const Duration(milliseconds: 10));
+        return emissions.isEmpty;
+      });
+      expect(emissions.first, hasLength(0));
+
       await dao.insertTask(TaskItemsCompanion.insert(title: 'Watched task'));
+
+      // Wait for the second emission with 1 item
+      await Future.doWhile(() async {
+        await Future.delayed(const Duration(milliseconds: 10));
+        return emissions.length < 2;
+      });
+      expect(emissions[1], hasLength(1));
+      await sub.cancel();
     });
   });
 }

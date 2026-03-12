@@ -1,4 +1,5 @@
 import SwiftUI
+import TinyClawCore
 
 /// Inline confirmation card shown when a task or event is created via chat.
 struct ConfirmationCard: View {

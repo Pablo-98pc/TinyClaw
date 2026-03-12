@@ -1,4 +1,5 @@
 import SwiftUI
+import TinyClawStore
 
 struct TaskRow: View {
     let task: TaskItem

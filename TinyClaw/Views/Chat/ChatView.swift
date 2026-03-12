@@ -1,5 +1,7 @@
 import SwiftUI
 import SwiftData
+import TinyClawCore
+import TinyClawStore
 import TinyClawDispatcher
 import TinyClawSpecialists
 

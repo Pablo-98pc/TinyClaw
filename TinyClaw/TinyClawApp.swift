@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import TinyClawStore
 
 @main
 struct TinyClawApp: App {

@@ -1,4 +1,5 @@
 import SwiftUI
+import TinyClawStore
 
 struct EventRow: View {
     let event: EventItem

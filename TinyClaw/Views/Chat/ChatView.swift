@@ -1,10 +1,13 @@
 import SwiftUI
 import SwiftData
+import TinyClawDispatcher
+import TinyClawSpecialists
 
 struct ChatView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Message.timestamp) private var messages: [Message]
     @State private var inputText = ""
+    @State private var viewModel: ChatViewModel?
 
     var body: some View {
         NavigationStack {
@@ -42,21 +45,41 @@ struct ChatView: View {
             }
             .navigationTitle("TinyClaw")
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                if viewModel == nil {
+                    let manager = ModelManager()
+                    let dispatcher = StubDispatcher()
+                    Task { try? await dispatcher.load() }
+
+                    // Register stub specialists for development
+                    let chatStub = StubSpecialist(id: "chat", memoryFootprint: 500_000_000,
+                        cannedResponse: "I'm TinyClaw, your on-device assistant. How can I help?")
+                    let summarizerStub = StubSpecialist(id: "summarizer", memoryFootprint: 150_000_000,
+                        cannedResponse: "Here's a summary of the text you provided.")
+                    manager.register(specialist: chatStub, for: .chat)
+                    manager.register(specialist: summarizerStub, for: .summarize)
+
+                    viewModel = ChatViewModel(
+                        modelManager: manager,
+                        dispatcher: dispatcher,
+                        modelContext: modelContext
+                    )
+                }
+            }
         }
     }
 
     private func sendMessage() {
         let text = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return }
-
-        let userMessage = Message(role: .user, content: text)
-        modelContext.insert(userMessage)
         inputText = ""
 
-        // TODO: Wire up ChatViewModel for dispatch → specialist → response
+        Task {
+            await viewModel?.send(text: text)
+        }
     }
 
     private func startVoiceInput() {
-        // TODO: Wire up TranscriberProtocol for push-to-talk
+        // TODO: Wire up TranscriberProtocol in a future task
     }
 }

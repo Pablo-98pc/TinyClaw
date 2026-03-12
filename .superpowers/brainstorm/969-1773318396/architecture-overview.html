@@ -1,0 +1,101 @@
+<h2>Section 1: High-Level Architecture</h2>
+<p class="subtitle">The core data flow — from user input to specialist response</p>
+
+<div class="mockup">
+  <div class="mockup-header">TinyClaw Architecture — On-Device Multi-Model Routing</div>
+  <div class="mockup-body" style="padding: 32px; background: #0d1117;">
+
+    <!-- User Layer -->
+    <div style="text-align: center; margin-bottom: 24px;">
+      <div style="display: inline-block; background: #1a73e8; color: white; padding: 12px 32px; border-radius: 12px; font-weight: 600; font-size: 15px;">
+        SwiftUI Chat Interface
+      </div>
+      <div style="color: #8b949e; font-size: 12px; margin-top: 6px;">Single conversation thread + specialist badge</div>
+    </div>
+
+    <!-- Arrow -->
+    <div style="text-align: center; color: #8b949e; font-size: 20px; margin: 8px 0;">&#x25BC;</div>
+
+    <!-- Dispatcher -->
+    <div style="max-width: 400px; margin: 0 auto 24px; background: #1c1c2e; border: 2px solid #f59e0b; border-radius: 12px; padding: 16px; text-align: center;">
+      <div style="color: #f59e0b; font-weight: 700; font-size: 15px;">Dispatcher</div>
+      <div style="color: #8b949e; font-size: 12px; margin-top: 4px;">BERT-tiny · 17MB · &lt;50ms</div>
+      <div style="color: #6b7280; font-size: 11px; margin-top: 4px;">Always in memory (pinned)</div>
+    </div>
+
+    <!-- Arrow splits -->
+    <div style="display: flex; justify-content: center; gap: 80px; color: #8b949e; font-size: 20px; margin: 8px 0;">
+      <span>&#x25BF;</span>
+      <span>&#x25BF;</span>
+      <span>&#x25BF;</span>
+    </div>
+
+    <!-- Model Manager -->
+    <div style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+      <div style="text-align: center; color: #58a6ff; font-weight: 600; font-size: 13px; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px;">
+        Model Manager (LRU Cache · 4GB Budget)
+      </div>
+
+      <!-- Specialists -->
+      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+
+        <div style="background: #0d1117; border: 1px solid #238636; border-radius: 10px; padding: 14px 18px; min-width: 160px; text-align: center;">
+          <div style="color: #3fb950; font-weight: 600; font-size: 14px;">Chat</div>
+          <div style="color: #8b949e; font-size: 11px; margin-top: 4px;">Llama 3.2 1B</div>
+          <div style="color: #6b7280; font-size: 11px;">~500MB · Core ML</div>
+        </div>
+
+        <div style="background: #0d1117; border: 1px solid #8957e5; border-radius: 10px; padding: 14px 18px; min-width: 160px; text-align: center;">
+          <div style="color: #bc8cff; font-weight: 600; font-size: 14px;">Code</div>
+          <div style="color: #8b949e; font-size: 11px; margin-top: 4px;">Phi-3 Mini 3.8B</div>
+          <div style="color: #6b7280; font-size: 11px;">~2GB · Core ML</div>
+        </div>
+
+        <div style="background: #0d1117; border: 1px solid #da3633; border-radius: 10px; padding: 14px 18px; min-width: 160px; text-align: center;">
+          <div style="color: #f85149; font-weight: 600; font-size: 14px;">Summarizer</div>
+          <div style="color: #8b949e; font-size: 11px; margin-top: 4px;">DistilBART 306M</div>
+          <div style="color: #6b7280; font-size: 11px;">~150MB · Core ML</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Memory bar -->
+    <div style="background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 12px 16px; margin-top: 16px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <span style="color: #8b949e; font-size: 12px;">RAM Budget</span>
+        <span style="color: #8b949e; font-size: 12px;">~2.7GB / 4GB used</span>
+      </div>
+      <div style="background: #21262d; border-radius: 4px; height: 12px; overflow: hidden; display: flex;">
+        <div style="width: 0.6%; background: #f59e0b;" title="Dispatcher 17MB"></div>
+        <div style="width: 18.5%; background: #3fb950;" title="Chat 500MB"></div>
+        <div style="width: 50%; background: #8957e5;" title="Code 2GB"></div>
+        <div style="width: 5.6%; background: #f85149;" title="Summarizer 150MB"></div>
+        <div style="flex: 1; background: #21262d;" title="Free"></div>
+      </div>
+      <div style="display: flex; gap: 16px; margin-top: 8px; flex-wrap: wrap;">
+        <span style="color: #f59e0b; font-size: 10px;">&#9632; Dispatcher</span>
+        <span style="color: #3fb950; font-size: 10px;">&#9632; Chat</span>
+        <span style="color: #8957e5; font-size: 10px;">&#9632; Code</span>
+        <span style="color: #f85149; font-size: 10px;">&#9632; Summarizer</span>
+        <span style="color: #21262d; font-size: 10px; -webkit-text-stroke: 1px #30363d;">&#9632; Free (~1.3GB)</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div style="margin-top: 24px;">
+  <h3>Data Flow</h3>
+  <ol style="color: #c9d1d9; line-height: 1.8;">
+    <li>User types a message in the SwiftUI chat interface</li>
+    <li>Dispatcher (BERT-tiny, always in memory) classifies intent in &lt;50ms</li>
+    <li>Model Manager checks if the target specialist is loaded; if not, loads it (evicting LRU model if needed)</li>
+    <li>Specialist runs inference via Core ML on the Neural Engine</li>
+    <li>Response streams back to the chat UI with a specialist badge (e.g., "Code" or "Chat")</li>
+  </ol>
+</div>
+
+<div style="margin-top: 20px;">
+  <p class="subtitle">Does this high-level architecture look right? Any components missing or misplaced?</p>
+</div>

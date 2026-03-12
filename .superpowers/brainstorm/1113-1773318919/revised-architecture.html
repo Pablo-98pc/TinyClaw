@@ -1,0 +1,133 @@
+<h2>Revised Architecture — TinyClaw v0</h2>
+<p class="subtitle">On-device personal assistant with voice, chat, summarization, and local task/event management</p>
+
+<div class="mockup">
+  <div class="mockup-header">TinyClaw — Revised Architecture (~817MB total)</div>
+  <div class="mockup-body" style="padding: 28px; background: #0d1117;">
+
+    <!-- Input Layer -->
+    <div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 20px;">
+      <div style="background: #1a73e8; color: white; padding: 10px 24px; border-radius: 10px; font-weight: 600; font-size: 14px;">
+        Text Input
+      </div>
+      <div style="background: #e8361a; color: white; padding: 10px 24px; border-radius: 10px; font-weight: 600; font-size: 14px;">
+        Push-to-Talk Mic
+      </div>
+    </div>
+
+    <!-- STT -->
+    <div style="display: flex; justify-content: center; margin-bottom: 8px;">
+      <div style="color: #8b949e; font-size: 11px;">voice only &#x25BC;</div>
+    </div>
+    <div style="max-width: 320px; margin: 0 auto 20px; background: #1c1c2e; border: 1px solid #e8361a; border-radius: 10px; padding: 12px; text-align: center;">
+      <div style="color: #f87171; font-weight: 600; font-size: 14px;">Speech-to-Text</div>
+      <div style="color: #8b949e; font-size: 11px;">Whisper base · 150MB</div>
+    </div>
+
+    <!-- Arrow to dispatcher -->
+    <div style="text-align: center; color: #8b949e; font-size: 18px; margin: 6px 0;">&#x25BC; transcribed text</div>
+
+    <!-- Dispatcher -->
+    <div style="max-width: 380px; margin: 0 auto 20px; background: #1c1c2e; border: 2px solid #f59e0b; border-radius: 12px; padding: 14px; text-align: center;">
+      <div style="color: #f59e0b; font-weight: 700; font-size: 15px;">Dispatcher</div>
+      <div style="color: #8b949e; font-size: 11px;">BERT-tiny · 17MB · &lt;50ms · pinned</div>
+      <div style="display: flex; justify-content: center; gap: 8px; margin-top: 10px; flex-wrap: wrap;">
+        <span style="background: #1e3a2f; color: #3fb950; padding: 3px 10px; border-radius: 6px; font-size: 11px;">chat</span>
+        <span style="background: #3b1d1d; color: #f85149; padding: 3px 10px; border-radius: 6px; font-size: 11px;">summarize</span>
+        <span style="background: #1d2d3b; color: #58a6ff; padding: 3px 10px; border-radius: 6px; font-size: 11px;">task</span>
+        <span style="background: #2d1d3b; color: #bc8cff; padding: 3px 10px; border-radius: 6px; font-size: 11px;">event</span>
+      </div>
+    </div>
+
+    <!-- Routing arrows -->
+    <div style="display: flex; justify-content: center; gap: 100px; color: #8b949e; font-size: 18px; margin: 6px 0;">
+      <span>&#x25BF;</span>
+      <span>&#x25BF;</span>
+    </div>
+
+    <!-- Model Manager -->
+    <div style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 18px; margin-bottom: 16px;">
+      <div style="text-align: center; color: #58a6ff; font-weight: 600; font-size: 12px; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 1px;">
+        Model Manager (LRU Cache · 4GB Budget)
+      </div>
+
+      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        <div style="background: #0d1117; border: 1px solid #238636; border-radius: 10px; padding: 12px 16px; min-width: 200px; text-align: center;">
+          <div style="color: #3fb950; font-weight: 600; font-size: 14px;">Chat / Assistant</div>
+          <div style="color: #8b949e; font-size: 11px; margin-top: 4px;">Llama 3.2 1B · ~500MB</div>
+          <div style="color: #6b7280; font-size: 10px; margin-top: 4px;">Handles: chat, task extraction, event extraction</div>
+        </div>
+
+        <div style="background: #0d1117; border: 1px solid #da3633; border-radius: 10px; padding: 12px 16px; min-width: 200px; text-align: center;">
+          <div style="color: #f85149; font-weight: 600; font-size: 14px;">Summarizer</div>
+          <div style="color: #8b949e; font-size: 11px; margin-top: 4px;">DistilBART · ~150MB</div>
+          <div style="color: #6b7280; font-size: 10px; margin-top: 4px;">Handles: text & document summarization</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Local Storage -->
+    <div style="text-align: center; color: #8b949e; font-size: 18px; margin: 10px 0;">&#x25BC;</div>
+    <div style="background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 16px;">
+      <div style="text-align: center; color: #8b949e; font-weight: 600; font-size: 12px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;">
+        Local Storage (SwiftData)
+      </div>
+      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        <div style="background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 10px 20px; text-align: center;">
+          <div style="color: #58a6ff; font-weight: 600; font-size: 13px;">Tasks</div>
+          <div style="color: #6b7280; font-size: 10px;">title, due date, status, notes</div>
+        </div>
+        <div style="background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 10px 20px; text-align: center;">
+          <div style="color: #bc8cff; font-weight: 600; font-size: 13px;">Events</div>
+          <div style="color: #6b7280; font-size: 10px;">title, date, time, recurrence</div>
+        </div>
+        <div style="background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 10px 20px; text-align: center;">
+          <div style="color: #3fb950; font-weight: 600; font-size: 13px;">Chat History</div>
+          <div style="color: #6b7280; font-size: 10px;">messages, context window</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RAM bar -->
+    <div style="background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 12px 16px; margin-top: 16px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <span style="color: #8b949e; font-size: 12px;">RAM Budget</span>
+        <span style="color: #3fb950; font-size: 12px; font-weight: 600;">~817MB / 4GB — 80% headroom!</span>
+      </div>
+      <div style="background: #21262d; border-radius: 4px; height: 14px; overflow: hidden; display: flex;">
+        <div style="width: 0.4%; background: #f59e0b;" title="Dispatcher 17MB"></div>
+        <div style="width: 3.7%; background: #f87171;" title="Whisper 150MB"></div>
+        <div style="width: 12.5%; background: #3fb950;" title="Chat 500MB"></div>
+        <div style="width: 3.7%; background: #f85149;" title="Summarizer 150MB"></div>
+        <div style="flex: 1; background: #21262d;"></div>
+      </div>
+      <div style="display: flex; gap: 14px; margin-top: 8px; flex-wrap: wrap;">
+        <span style="color: #f59e0b; font-size: 10px;">&#9632; Dispatcher 17MB</span>
+        <span style="color: #f87171; font-size: 10px;">&#9632; Whisper 150MB</span>
+        <span style="color: #3fb950; font-size: 10px;">&#9632; Chat 500MB</span>
+        <span style="color: #f85149; font-size: 10px;">&#9632; Summarizer 150MB</span>
+        <span style="color: #4b5563; font-size: 10px;">&#9632; Free ~3.2GB</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div style="margin-top: 24px;">
+  <h3>Revised Data Flow</h3>
+  <ol style="color: #c9d1d9; line-height: 1.9;">
+    <li><strong>Input:</strong> User types text or taps push-to-talk mic button</li>
+    <li><strong>STT (voice only):</strong> Whisper base transcribes speech → text</li>
+    <li><strong>Dispatch:</strong> BERT-tiny classifies intent → <code>chat</code> / <code>summarize</code> / <code>task</code> / <code>event</code></li>
+    <li><strong>Routing:</strong>
+      <ul style="margin-top: 4px;">
+        <li><code>chat</code> → Chat model responds conversationally</li>
+        <li><code>summarize</code> → Summarizer processes text</li>
+        <li><code>task</code> / <code>event</code> → Chat model extracts structured data → saves to SwiftData</li>
+      </ul>
+    </li>
+    <li><strong>Response:</strong> Streams back to UI with specialist badge + confirmation for tasks/events</li>
+  </ol>
+</div>
+
+<p class="subtitle" style="margin-top: 20px;">Does this revised architecture look right? Any changes before we proceed to component details?</p>

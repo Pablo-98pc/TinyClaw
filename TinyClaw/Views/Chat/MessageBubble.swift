@@ -1,4 +1,5 @@
 import SwiftUI
+import TinyClawCore
 
 struct MessageBubble: View {
     let content: String

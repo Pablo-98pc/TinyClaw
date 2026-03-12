@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import TinyClawStore
 
 struct EventsView: View {
     @Environment(\.modelContext) private var modelContext

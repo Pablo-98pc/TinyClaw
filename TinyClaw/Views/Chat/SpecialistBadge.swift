@@ -1,4 +1,5 @@
 import SwiftUI
+import TinyClawCore
 
 struct SpecialistBadge: View {
     let intent: Intent

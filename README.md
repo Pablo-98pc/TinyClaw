@@ -1,45 +1,65 @@
 # TinyClaw
 
-On-device multi-model AI assistant for iOS. Runs entirely locally — no cloud, no data leaves your phone.
-
-## Features (v0)
-
-- **Chat** — General conversation powered by Llama 3.2 1B
-- **Summarize** — Text summarization via DistilBART
-- **Voice Input** — Push-to-talk with Whisper speech-to-text
-- **Tasks** — Create and manage tasks through natural language
-- **Events** — Create and manage calendar events through conversation
-
-All inference runs on-device via Core ML on the Apple Neural Engine.
+On-device multi-model AI assistant for iOS, built with Flutter.
 
 ## Architecture
 
-A lightweight BERT-tiny dispatcher classifies user intent (<50ms) and routes to the appropriate specialist model. A central ModelManager handles model lifecycle with LRU eviction under a 4GB RAM budget.
+TinyClaw uses a mixture-of-experts pattern where a lightweight dispatcher routes user input to specialized ML models:
 
-Total model footprint: ~817MB (4-bit quantized).
+- **Dispatcher** — Classifies user input into intents (chat, summarize, task, event)
+- **Specialists** — Intent-specific ML models (Llama 3.2 1B for chat, DistilBART for summarization)
+- **ModelManager** — LRU memory management with 4GB budget, pinning, and active-stream protection
+- **Platform Channels** — MethodChannel bridge to native Core ML runtime on iOS
 
-## Requirements
+## Tech Stack
 
-- iOS 17+
-- Xcode 15+
-- iPhone with A14 chip or later (for Neural Engine performance)
+- **Flutter 3.x** / Dart
+- **Riverpod** — State management
+- **drift** — SQLite local storage with reactive streams
+- **Core ML** — Native ML runtime (via platform channels)
 
 ## Project Structure
 
-- `TinyClaw/Core/` — Protocols, ModelManager, Intent types
-- `TinyClaw/Specialists/` — Core ML model wrappers
-- `TinyClaw/Dispatcher/` — Intent classification
-- `TinyClaw/Transcriber/` — Speech-to-text
-- `TinyClaw/Store/` — SwiftData models + JSON parser
-- `TinyClaw/Views/` — SwiftUI interface
-- `TinyClaw/ViewModels/` — Orchestration layer
-- `docs/decisions/` — Architecture Decision Records
-- `docs/superpowers/specs/` — Design specifications
+```
+lib/
+  core/           # Intent, Specialist, Dispatcher, Transcriber, ModelManager
+  specialists/    # StubSpecialist (real models coming soon)
+  dispatcher/     # StubDispatcher (keyword-based, BERT-tiny planned)
+  transcriber/    # StubTranscriber (Whisper planned)
+  store/          # drift database, StructuredOutputParser
+  platform/       # MlChannel (MethodChannel wrapper)
+  providers/      # Riverpod providers
+  views/          # UI screens (Chat, Tasks, Events)
+```
 
-## Development
+## Getting Started
 
-The project currently uses stub models for development. Real Core ML models will be integrated as they are converted and quantized.
+### Prerequisites
+- Flutter SDK 3.x
+- Dart 3.x
 
-## License
+### Setup
+```bash
+git clone https://github.com/Pablo-98pc/TinyClaw.git
+cd TinyClaw
+flutter pub get
+dart run build_runner build
+```
 
-TBD
+### Run Tests
+```bash
+flutter test
+```
+
+### Run on iOS
+```bash
+flutter run
+```
+
+## Current Status (v0 — Stub Models)
+
+All ML models are currently stubs with canned responses. The architecture is complete and ready for real model integration:
+
+1. Replace `StubDispatcher` with BERT-tiny intent classifier
+2. Replace `StubSpecialist` instances with Core ML model wrappers
+3. Implement native iOS side of `com.tinyclaw/ml` MethodChannel

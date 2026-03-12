@@ -1,0 +1,168 @@
+<h2>Section 3: UI Structure</h2>
+<p class="subtitle">Three tabs — Chat is the primary experience, Tasks and Events are supporting views</p>
+
+<div class="split" style="gap: 16px; align-items: flex-start;">
+
+  <!-- Chat Screen -->
+  <div class="mockup" style="flex: 1.2;">
+    <div class="mockup-header">Chat (Main Screen)</div>
+    <div class="mockup-body" style="background: #0d1117; padding: 0; min-height: 480px; display: flex; flex-direction: column;">
+
+      <!-- Status bar -->
+      <div style="background: #161b22; padding: 8px 16px; display: flex; justify-content: between; align-items: center; border-bottom: 1px solid #21262d;">
+        <span style="color: #8b949e; font-size: 11px; flex: 1;">TinyClaw</span>
+        <span style="color: #3fb950; font-size: 10px;">All models ready</span>
+      </div>
+
+      <!-- Messages -->
+      <div style="flex: 1; padding: 16px; overflow-y: auto;">
+
+        <!-- User message -->
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 14px;">
+          <div style="background: #1a73e8; color: white; padding: 10px 14px; border-radius: 16px 16px 4px 16px; max-width: 75%; font-size: 13px;">
+            Add a task to buy groceries tomorrow at 5pm
+          </div>
+        </div>
+
+        <!-- Assistant response with badge -->
+        <div style="display: flex; justify-content: flex-start; margin-bottom: 14px;">
+          <div style="max-width: 80%;">
+            <div style="margin-bottom: 4px;">
+              <span style="background: #1d2d3b; color: #58a6ff; padding: 2px 8px; border-radius: 4px; font-size: 9px; font-weight: 600; text-transform: uppercase;">Task</span>
+            </div>
+            <div style="background: #161b22; color: #c9d1d9; padding: 10px 14px; border-radius: 4px 16px 16px 16px; font-size: 13px; border: 1px solid #21262d;">
+              Got it! I've added:<br>
+              <div style="background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 8px 12px; margin-top: 8px;">
+                <div style="color: #58a6ff; font-weight: 600; font-size: 12px;">Buy groceries</div>
+                <div style="color: #8b949e; font-size: 11px;">Tomorrow, 5:00 PM</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- User voice message -->
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 14px;">
+          <div style="max-width: 75%;">
+            <div style="text-align: right; margin-bottom: 4px;">
+              <span style="color: #f87171; font-size: 9px; font-weight: 600;">VOICE</span>
+            </div>
+            <div style="background: #1a73e8; color: white; padding: 10px 14px; border-radius: 16px 16px 4px 16px; font-size: 13px;">
+              Summarize the article I just pasted
+            </div>
+          </div>
+        </div>
+
+        <!-- Summarizer response -->
+        <div style="display: flex; justify-content: flex-start; margin-bottom: 14px;">
+          <div style="max-width: 80%;">
+            <div style="margin-bottom: 4px;">
+              <span style="background: #3b1d1d; color: #f85149; padding: 2px 8px; border-radius: 4px; font-size: 9px; font-weight: 600; text-transform: uppercase;">Summarize</span>
+            </div>
+            <div style="background: #161b22; color: #c9d1d9; padding: 10px 14px; border-radius: 4px 16px 16px 16px; font-size: 13px; border: 1px solid #21262d;">
+              The article discusses three main points...
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input bar -->
+      <div style="background: #161b22; padding: 12px 16px; border-top: 1px solid #21262d; display: flex; gap: 8px; align-items: center;">
+        <div style="flex: 1; background: #0d1117; border: 1px solid #30363d; border-radius: 20px; padding: 10px 16px; color: #6b7280; font-size: 13px;">
+          Message TinyClaw...
+        </div>
+        <div style="width: 38px; height: 38px; background: #e8361a; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+          <span style="color: white; font-size: 16px;">&#x1F3A4;</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tasks & Events Screens -->
+  <div style="flex: 0.8; display: flex; flex-direction: column; gap: 16px;">
+
+    <!-- Tasks Screen -->
+    <div class="mockup">
+      <div class="mockup-header">Tasks Tab</div>
+      <div class="mockup-body" style="background: #0d1117; padding: 16px; min-height: 200px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <span style="color: #c9d1d9; font-weight: 600; font-size: 14px;">My Tasks</span>
+          <span style="color: #8b949e; font-size: 11px;">3 pending</span>
+        </div>
+
+        <div style="background: #161b22; border: 1px solid #21262d; border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px;">
+          <div style="width: 18px; height: 18px; border: 2px solid #30363d; border-radius: 4px;"></div>
+          <div>
+            <div style="color: #c9d1d9; font-size: 12px; font-weight: 500;">Buy groceries</div>
+            <div style="color: #8b949e; font-size: 10px;">Tomorrow, 5:00 PM</div>
+          </div>
+        </div>
+
+        <div style="background: #161b22; border: 1px solid #21262d; border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px;">
+          <div style="width: 18px; height: 18px; border: 2px solid #30363d; border-radius: 4px;"></div>
+          <div>
+            <div style="color: #c9d1d9; font-size: 12px; font-weight: 500;">Call dentist</div>
+            <div style="color: #8b949e; font-size: 10px;">Friday, 10:00 AM</div>
+          </div>
+        </div>
+
+        <div style="background: #161b22; border: 1px solid #21262d; border-radius: 8px; padding: 10px 12px; display: flex; align-items: center; gap: 10px;">
+          <div style="width: 18px; height: 18px; background: #238636; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+            <span style="color: white; font-size: 11px;">&#x2713;</span>
+          </div>
+          <div>
+            <div style="color: #6b7280; font-size: 12px; text-decoration: line-through;">Send report</div>
+            <div style="color: #6b7280; font-size: 10px;">Completed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Events Screen -->
+    <div class="mockup">
+      <div class="mockup-header">Events Tab</div>
+      <div class="mockup-body" style="background: #0d1117; padding: 16px; min-height: 180px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <span style="color: #c9d1d9; font-weight: 600; font-size: 14px;">Upcoming</span>
+          <span style="color: #8b949e; font-size: 11px;">This week</span>
+        </div>
+
+        <div style="background: #161b22; border-left: 3px solid #bc8cff; border-radius: 0 8px 8px 0; padding: 10px 12px; margin-bottom: 8px;">
+          <div style="color: #c9d1d9; font-size: 12px; font-weight: 500;">Team standup</div>
+          <div style="color: #8b949e; font-size: 10px;">Tomorrow, 9:00 AM - 9:30 AM</div>
+          <div style="color: #6b7280; font-size: 10px;">Repeats weekly</div>
+        </div>
+
+        <div style="background: #161b22; border-left: 3px solid #58a6ff; border-radius: 0 8px 8px 0; padding: 10px 12px;">
+          <div style="color: #c9d1d9; font-size: 12px; font-weight: 500;">Dinner with Sarah</div>
+          <div style="color: #8b949e; font-size: 10px;">Saturday, 7:00 PM - 9:00 PM</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Tab bar -->
+<div style="margin-top: 20px;">
+  <div class="mockup">
+    <div class="mockup-header">Bottom Tab Bar</div>
+    <div class="mockup-body" style="background: #161b22; padding: 12px 0;">
+      <div style="display: flex; justify-content: space-around; text-align: center;">
+        <div>
+          <div style="font-size: 20px;">&#x1F4AC;</div>
+          <div style="color: #58a6ff; font-size: 10px; font-weight: 600;">Chat</div>
+        </div>
+        <div>
+          <div style="font-size: 20px;">&#x2713;</div>
+          <div style="color: #8b949e; font-size: 10px;">Tasks</div>
+        </div>
+        <div>
+          <div style="font-size: 20px;">&#x1F4C5;</div>
+          <div style="color: #8b949e; font-size: 10px;">Events</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top: 20px;">Three-tab layout: Chat is the hub, Tasks and Events are views of data created through chat. Does this UI structure work for you?</p>

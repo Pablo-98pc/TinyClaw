@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 @main
 struct TinyClawApp: App {
@@ -6,5 +7,6 @@ struct TinyClawApp: App {
         WindowGroup {
             ContentView()
         }
+        .modelContainer(for: [TaskItem.self, EventItem.self, Message.self])
     }
 }

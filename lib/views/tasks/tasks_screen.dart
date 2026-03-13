@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/database_provider.dart';
 import '../../store/database.dart';
-import '../../store/habit_dao.dart';
 import '../theme/theme.dart';
 import 'habit_row.dart';
 import 'task_row.dart';

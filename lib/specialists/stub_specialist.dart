@@ -12,7 +12,7 @@ class StubSpecialist extends Specialist {
   bool shouldFail;
 
   bool _isLoaded = false;
-  int _memoryFootprint;
+  final int _memoryFootprint;
 
   StubSpecialist({
     required this.id,

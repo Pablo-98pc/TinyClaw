@@ -10,7 +10,6 @@ import 'package:tinyclaw/store/database.dart';
 import 'package:tinyclaw/specialists/stub_specialist.dart';
 import 'package:tinyclaw/dispatcher/stub_dispatcher.dart';
 import 'package:tinyclaw/core/model_manager.dart';
-import 'package:tinyclaw/core/dispatcher.dart';
 
 void main() {
   group('ChatNotifier', () {

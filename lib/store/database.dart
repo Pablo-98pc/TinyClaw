@@ -5,6 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 
 import 'habit_dao.dart';
+import 'search_dao.dart';
 
 part 'database.g.dart';
 
@@ -195,6 +196,7 @@ class AppDatabase extends _$AppDatabase {
   );
 
   HabitDao get habitDao => HabitDao(this);
+  SearchDao get searchDao => SearchDao(this);
 }
 
 LazyDatabase _openConnection() {

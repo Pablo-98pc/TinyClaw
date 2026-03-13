@@ -62,6 +62,14 @@ class StubSpecialist extends Specialist {
         return '```json\n{"type":"task","title":"$input","dueDate":null}\n```';
       case Intent.event:
         return '```json\n{"type":"event","title":"$input","date":"2026-03-15","startTime":"09:00","endTime":"10:00"}\n```';
+      case Intent.note:
+        return '```json\n{"type":"note","content":"$input"}\n```';
+      case Intent.habit:
+        return '```json\n{"type":"habit","title":"$input","frequency":"daily","targetTime":null}\n```';
+      case Intent.draft:
+        return '```json\n{"type":"draft","content":"Here is a draft based on your request: $input"}\n```';
+      case Intent.search:
+        return 'Searching for: $input';
     }
   }
 }

@@ -14,6 +14,7 @@ class TcNavBar extends StatelessWidget {
   static const _items = [
     _NavItem(Icons.chat_bubble_outline, Icons.chat_bubble, 'Chat'),
     _NavItem(Icons.check_circle_outline, Icons.check_circle, 'Tasks'),
+    _NavItem(Icons.note_outlined, Icons.note, 'Notes'),
     _NavItem(Icons.event_outlined, Icons.event, 'Events'),
   ];
 

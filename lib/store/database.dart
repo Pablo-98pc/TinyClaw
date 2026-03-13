@@ -4,6 +4,9 @@ import 'package:drift/native.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 
+import 'habit_dao.dart';
+import 'search_dao.dart';
+
 part 'database.g.dart';
 
 // ─── Tables ───
@@ -26,6 +29,34 @@ class EventItems extends Table {
   TextColumn get recurrence => text().nullable()();
   TextColumn get notes => text().nullable()();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+}
+
+class NoteItems extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get title => text().withDefault(const Constant(''))();
+  TextColumn get content => text()();
+  TextColumn get tags => text().nullable()();
+  DateTimeColumn get extractedDate => dateTime().nullable()();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+}
+
+class HabitItems extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get title => text()();
+  TextColumn get frequency => text()(); // daily, weekdays, every_2_hours, weekly
+  TextColumn get targetTime => text().nullable()();
+  IntColumn get currentStreak => integer().withDefault(const Constant(0))();
+  IntColumn get longestStreak => integer().withDefault(const Constant(0))();
+  DateTimeColumn get lastCompletedAt => dateTime().nullable()();
+  BoolColumn get isActive => boolean().withDefault(const Constant(true))();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+}
+
+class HabitLogItems extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get habitId => integer().references(HabitItems, #id)();
+  DateTimeColumn get completedAt => dateTime().withDefault(currentDateAndTime)();
 }
 
 class Messages extends Table {
@@ -90,6 +121,34 @@ class EventDao extends DatabaseAccessor<AppDatabase> with _$EventDaoMixin {
   Future<int> deleteEvent(int id) => (delete(eventItems)..where((e) => e.id.equals(id))).go();
 }
 
+@DriftAccessor(tables: [NoteItems])
+class NoteDao extends DatabaseAccessor<AppDatabase> with _$NoteDaoMixin {
+  NoteDao(super.db);
+
+  Stream<List<NoteItem>> watchAllNotes() => (select(noteItems)
+    ..orderBy([(n) => OrderingTerm.desc(n.updatedAt)]))
+    .watch();
+
+  Stream<NoteItem> watchNoteById(int id) =>
+    (select(noteItems)..where((n) => n.id.equals(id))).watchSingle();
+
+  Future<int> insertNote(NoteItemsCompanion entry) =>
+    into(noteItems).insert(entry);
+
+  Future<bool> updateNote(NoteItem note) =>
+    (update(noteItems)..where((n) => n.id.equals(note.id)))
+      .write(NoteItemsCompanion(
+        content: Value(note.content),
+        tags: Value(note.tags),
+        extractedDate: Value(note.extractedDate),
+        updatedAt: Value(DateTime.now()),
+      ))
+      .then((rows) => rows > 0);
+
+  Future<int> deleteNote(int id) =>
+    (delete(noteItems)..where((n) => n.id.equals(id))).go();
+}
+
 @DriftAccessor(tables: [Messages])
 class MessageDao extends DatabaseAccessor<AppDatabase> with _$MessageDaoMixin {
   MessageDao(super.db);
@@ -111,7 +170,10 @@ class MessageDao extends DatabaseAccessor<AppDatabase> with _$MessageDaoMixin {
 
 // ─── Database ───
 
-@DriftDatabase(tables: [TaskItems, EventItems, Messages], daos: [TaskDao, EventDao, MessageDao])
+@DriftDatabase(
+  tables: [TaskItems, EventItems, NoteItems, Messages, HabitItems, HabitLogItems],
+  daos: [TaskDao, EventDao, NoteDao, MessageDao],
+)
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
@@ -119,7 +181,22 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 3;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    onCreate: (Migrator m) => m.createAll(),
+    onUpgrade: (Migrator m, int from, int to) async {
+      if (from < 3) {
+        await m.addColumn(noteItems, noteItems.title);
+        await m.createTable(habitItems);
+        await m.createTable(habitLogItems);
+      }
+    },
+  );
+
+  HabitDao get habitDao => HabitDao(this);
+  SearchDao get searchDao => SearchDao(this);
 }
 
 LazyDatabase _openConnection() {

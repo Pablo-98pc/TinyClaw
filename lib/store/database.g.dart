@@ -27,6 +27,18 @@ class EventDaoManager {
       $$EventItemsTableTableManager(_db.attachedDatabase, _db.eventItems);
 }
 
+mixin _$NoteDaoMixin on DatabaseAccessor<AppDatabase> {
+  $NoteItemsTable get noteItems => attachedDatabase.noteItems;
+  NoteDaoManager get managers => NoteDaoManager(this);
+}
+
+class NoteDaoManager {
+  final _$NoteDaoMixin _db;
+  NoteDaoManager(this._db);
+  $$NoteItemsTableTableManager get noteItems =>
+      $$NoteItemsTableTableManager(_db.attachedDatabase, _db.noteItems);
+}
+
 mixin _$MessageDaoMixin on DatabaseAccessor<AppDatabase> {
   $MessagesTable get messages => attachedDatabase.messages;
   MessageDaoManager get managers => MessageDaoManager(this);
@@ -941,6 +953,458 @@ class EventItemsCompanion extends UpdateCompanion<EventItem> {
   }
 }
 
+class $NoteItemsTable extends NoteItems
+    with TableInfo<$NoteItemsTable, NoteItem> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $NoteItemsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _contentMeta = const VerificationMeta(
+    'content',
+  );
+  @override
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
+    'content',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _tagsMeta = const VerificationMeta('tags');
+  @override
+  late final GeneratedColumn<String> tags = GeneratedColumn<String>(
+    'tags',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _extractedDateMeta = const VerificationMeta(
+    'extractedDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> extractedDate =
+      GeneratedColumn<DateTime>(
+        'extracted_date',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    title,
+    content,
+    tags,
+    extractedDate,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'note_items';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<NoteItem> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    }
+    if (data.containsKey('content')) {
+      context.handle(
+        _contentMeta,
+        content.isAcceptableOrUnknown(data['content']!, _contentMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_contentMeta);
+    }
+    if (data.containsKey('tags')) {
+      context.handle(
+        _tagsMeta,
+        tags.isAcceptableOrUnknown(data['tags']!, _tagsMeta),
+      );
+    }
+    if (data.containsKey('extracted_date')) {
+      context.handle(
+        _extractedDateMeta,
+        extractedDate.isAcceptableOrUnknown(
+          data['extracted_date']!,
+          _extractedDateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  NoteItem map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return NoteItem(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      content: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content'],
+      )!,
+      tags: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tags'],
+      ),
+      extractedDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}extracted_date'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $NoteItemsTable createAlias(String alias) {
+    return $NoteItemsTable(attachedDatabase, alias);
+  }
+}
+
+class NoteItem extends DataClass implements Insertable<NoteItem> {
+  final int id;
+  final String title;
+  final String content;
+  final String? tags;
+  final DateTime? extractedDate;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const NoteItem({
+    required this.id,
+    required this.title,
+    required this.content,
+    this.tags,
+    this.extractedDate,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['title'] = Variable<String>(title);
+    map['content'] = Variable<String>(content);
+    if (!nullToAbsent || tags != null) {
+      map['tags'] = Variable<String>(tags);
+    }
+    if (!nullToAbsent || extractedDate != null) {
+      map['extracted_date'] = Variable<DateTime>(extractedDate);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  NoteItemsCompanion toCompanion(bool nullToAbsent) {
+    return NoteItemsCompanion(
+      id: Value(id),
+      title: Value(title),
+      content: Value(content),
+      tags: tags == null && nullToAbsent ? const Value.absent() : Value(tags),
+      extractedDate: extractedDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(extractedDate),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory NoteItem.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return NoteItem(
+      id: serializer.fromJson<int>(json['id']),
+      title: serializer.fromJson<String>(json['title']),
+      content: serializer.fromJson<String>(json['content']),
+      tags: serializer.fromJson<String?>(json['tags']),
+      extractedDate: serializer.fromJson<DateTime?>(json['extractedDate']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'title': serializer.toJson<String>(title),
+      'content': serializer.toJson<String>(content),
+      'tags': serializer.toJson<String?>(tags),
+      'extractedDate': serializer.toJson<DateTime?>(extractedDate),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  NoteItem copyWith({
+    int? id,
+    String? title,
+    String? content,
+    Value<String?> tags = const Value.absent(),
+    Value<DateTime?> extractedDate = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => NoteItem(
+    id: id ?? this.id,
+    title: title ?? this.title,
+    content: content ?? this.content,
+    tags: tags.present ? tags.value : this.tags,
+    extractedDate: extractedDate.present
+        ? extractedDate.value
+        : this.extractedDate,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  NoteItem copyWithCompanion(NoteItemsCompanion data) {
+    return NoteItem(
+      id: data.id.present ? data.id.value : this.id,
+      title: data.title.present ? data.title.value : this.title,
+      content: data.content.present ? data.content.value : this.content,
+      tags: data.tags.present ? data.tags.value : this.tags,
+      extractedDate: data.extractedDate.present
+          ? data.extractedDate.value
+          : this.extractedDate,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NoteItem(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('content: $content, ')
+          ..write('tags: $tags, ')
+          ..write('extractedDate: $extractedDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    title,
+    content,
+    tags,
+    extractedDate,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is NoteItem &&
+          other.id == this.id &&
+          other.title == this.title &&
+          other.content == this.content &&
+          other.tags == this.tags &&
+          other.extractedDate == this.extractedDate &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class NoteItemsCompanion extends UpdateCompanion<NoteItem> {
+  final Value<int> id;
+  final Value<String> title;
+  final Value<String> content;
+  final Value<String?> tags;
+  final Value<DateTime?> extractedDate;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const NoteItemsCompanion({
+    this.id = const Value.absent(),
+    this.title = const Value.absent(),
+    this.content = const Value.absent(),
+    this.tags = const Value.absent(),
+    this.extractedDate = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  NoteItemsCompanion.insert({
+    this.id = const Value.absent(),
+    this.title = const Value.absent(),
+    required String content,
+    this.tags = const Value.absent(),
+    this.extractedDate = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  }) : content = Value(content);
+  static Insertable<NoteItem> custom({
+    Expression<int>? id,
+    Expression<String>? title,
+    Expression<String>? content,
+    Expression<String>? tags,
+    Expression<DateTime>? extractedDate,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (title != null) 'title': title,
+      if (content != null) 'content': content,
+      if (tags != null) 'tags': tags,
+      if (extractedDate != null) 'extracted_date': extractedDate,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  NoteItemsCompanion copyWith({
+    Value<int>? id,
+    Value<String>? title,
+    Value<String>? content,
+    Value<String?>? tags,
+    Value<DateTime?>? extractedDate,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return NoteItemsCompanion(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      content: content ?? this.content,
+      tags: tags ?? this.tags,
+      extractedDate: extractedDate ?? this.extractedDate,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
+    if (tags.present) {
+      map['tags'] = Variable<String>(tags.value);
+    }
+    if (extractedDate.present) {
+      map['extracted_date'] = Variable<DateTime>(extractedDate.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NoteItemsCompanion(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('content: $content, ')
+          ..write('tags: $tags, ')
+          ..write('extractedDate: $extractedDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $MessagesTable extends Messages with TableInfo<$MessagesTable, Message> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -1350,14 +1814,840 @@ class MessagesCompanion extends UpdateCompanion<Message> {
   }
 }
 
+class $HabitItemsTable extends HabitItems
+    with TableInfo<$HabitItemsTable, HabitItem> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $HabitItemsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _frequencyMeta = const VerificationMeta(
+    'frequency',
+  );
+  @override
+  late final GeneratedColumn<String> frequency = GeneratedColumn<String>(
+    'frequency',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _targetTimeMeta = const VerificationMeta(
+    'targetTime',
+  );
+  @override
+  late final GeneratedColumn<String> targetTime = GeneratedColumn<String>(
+    'target_time',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _currentStreakMeta = const VerificationMeta(
+    'currentStreak',
+  );
+  @override
+  late final GeneratedColumn<int> currentStreak = GeneratedColumn<int>(
+    'current_streak',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _longestStreakMeta = const VerificationMeta(
+    'longestStreak',
+  );
+  @override
+  late final GeneratedColumn<int> longestStreak = GeneratedColumn<int>(
+    'longest_streak',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _lastCompletedAtMeta = const VerificationMeta(
+    'lastCompletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastCompletedAt =
+      GeneratedColumn<DateTime>(
+        'last_completed_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    title,
+    frequency,
+    targetTime,
+    currentStreak,
+    longestStreak,
+    lastCompletedAt,
+    isActive,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'habit_items';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<HabitItem> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('frequency')) {
+      context.handle(
+        _frequencyMeta,
+        frequency.isAcceptableOrUnknown(data['frequency']!, _frequencyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_frequencyMeta);
+    }
+    if (data.containsKey('target_time')) {
+      context.handle(
+        _targetTimeMeta,
+        targetTime.isAcceptableOrUnknown(data['target_time']!, _targetTimeMeta),
+      );
+    }
+    if (data.containsKey('current_streak')) {
+      context.handle(
+        _currentStreakMeta,
+        currentStreak.isAcceptableOrUnknown(
+          data['current_streak']!,
+          _currentStreakMeta,
+        ),
+      );
+    }
+    if (data.containsKey('longest_streak')) {
+      context.handle(
+        _longestStreakMeta,
+        longestStreak.isAcceptableOrUnknown(
+          data['longest_streak']!,
+          _longestStreakMeta,
+        ),
+      );
+    }
+    if (data.containsKey('last_completed_at')) {
+      context.handle(
+        _lastCompletedAtMeta,
+        lastCompletedAt.isAcceptableOrUnknown(
+          data['last_completed_at']!,
+          _lastCompletedAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  HabitItem map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return HabitItem(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      frequency: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}frequency'],
+      )!,
+      targetTime: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}target_time'],
+      ),
+      currentStreak: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}current_streak'],
+      )!,
+      longestStreak: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}longest_streak'],
+      )!,
+      lastCompletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_completed_at'],
+      ),
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $HabitItemsTable createAlias(String alias) {
+    return $HabitItemsTable(attachedDatabase, alias);
+  }
+}
+
+class HabitItem extends DataClass implements Insertable<HabitItem> {
+  final int id;
+  final String title;
+  final String frequency;
+  final String? targetTime;
+  final int currentStreak;
+  final int longestStreak;
+  final DateTime? lastCompletedAt;
+  final bool isActive;
+  final DateTime createdAt;
+  const HabitItem({
+    required this.id,
+    required this.title,
+    required this.frequency,
+    this.targetTime,
+    required this.currentStreak,
+    required this.longestStreak,
+    this.lastCompletedAt,
+    required this.isActive,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['title'] = Variable<String>(title);
+    map['frequency'] = Variable<String>(frequency);
+    if (!nullToAbsent || targetTime != null) {
+      map['target_time'] = Variable<String>(targetTime);
+    }
+    map['current_streak'] = Variable<int>(currentStreak);
+    map['longest_streak'] = Variable<int>(longestStreak);
+    if (!nullToAbsent || lastCompletedAt != null) {
+      map['last_completed_at'] = Variable<DateTime>(lastCompletedAt);
+    }
+    map['is_active'] = Variable<bool>(isActive);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  HabitItemsCompanion toCompanion(bool nullToAbsent) {
+    return HabitItemsCompanion(
+      id: Value(id),
+      title: Value(title),
+      frequency: Value(frequency),
+      targetTime: targetTime == null && nullToAbsent
+          ? const Value.absent()
+          : Value(targetTime),
+      currentStreak: Value(currentStreak),
+      longestStreak: Value(longestStreak),
+      lastCompletedAt: lastCompletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastCompletedAt),
+      isActive: Value(isActive),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory HabitItem.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return HabitItem(
+      id: serializer.fromJson<int>(json['id']),
+      title: serializer.fromJson<String>(json['title']),
+      frequency: serializer.fromJson<String>(json['frequency']),
+      targetTime: serializer.fromJson<String?>(json['targetTime']),
+      currentStreak: serializer.fromJson<int>(json['currentStreak']),
+      longestStreak: serializer.fromJson<int>(json['longestStreak']),
+      lastCompletedAt: serializer.fromJson<DateTime?>(json['lastCompletedAt']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'title': serializer.toJson<String>(title),
+      'frequency': serializer.toJson<String>(frequency),
+      'targetTime': serializer.toJson<String?>(targetTime),
+      'currentStreak': serializer.toJson<int>(currentStreak),
+      'longestStreak': serializer.toJson<int>(longestStreak),
+      'lastCompletedAt': serializer.toJson<DateTime?>(lastCompletedAt),
+      'isActive': serializer.toJson<bool>(isActive),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  HabitItem copyWith({
+    int? id,
+    String? title,
+    String? frequency,
+    Value<String?> targetTime = const Value.absent(),
+    int? currentStreak,
+    int? longestStreak,
+    Value<DateTime?> lastCompletedAt = const Value.absent(),
+    bool? isActive,
+    DateTime? createdAt,
+  }) => HabitItem(
+    id: id ?? this.id,
+    title: title ?? this.title,
+    frequency: frequency ?? this.frequency,
+    targetTime: targetTime.present ? targetTime.value : this.targetTime,
+    currentStreak: currentStreak ?? this.currentStreak,
+    longestStreak: longestStreak ?? this.longestStreak,
+    lastCompletedAt: lastCompletedAt.present
+        ? lastCompletedAt.value
+        : this.lastCompletedAt,
+    isActive: isActive ?? this.isActive,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  HabitItem copyWithCompanion(HabitItemsCompanion data) {
+    return HabitItem(
+      id: data.id.present ? data.id.value : this.id,
+      title: data.title.present ? data.title.value : this.title,
+      frequency: data.frequency.present ? data.frequency.value : this.frequency,
+      targetTime: data.targetTime.present
+          ? data.targetTime.value
+          : this.targetTime,
+      currentStreak: data.currentStreak.present
+          ? data.currentStreak.value
+          : this.currentStreak,
+      longestStreak: data.longestStreak.present
+          ? data.longestStreak.value
+          : this.longestStreak,
+      lastCompletedAt: data.lastCompletedAt.present
+          ? data.lastCompletedAt.value
+          : this.lastCompletedAt,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HabitItem(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('frequency: $frequency, ')
+          ..write('targetTime: $targetTime, ')
+          ..write('currentStreak: $currentStreak, ')
+          ..write('longestStreak: $longestStreak, ')
+          ..write('lastCompletedAt: $lastCompletedAt, ')
+          ..write('isActive: $isActive, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    title,
+    frequency,
+    targetTime,
+    currentStreak,
+    longestStreak,
+    lastCompletedAt,
+    isActive,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is HabitItem &&
+          other.id == this.id &&
+          other.title == this.title &&
+          other.frequency == this.frequency &&
+          other.targetTime == this.targetTime &&
+          other.currentStreak == this.currentStreak &&
+          other.longestStreak == this.longestStreak &&
+          other.lastCompletedAt == this.lastCompletedAt &&
+          other.isActive == this.isActive &&
+          other.createdAt == this.createdAt);
+}
+
+class HabitItemsCompanion extends UpdateCompanion<HabitItem> {
+  final Value<int> id;
+  final Value<String> title;
+  final Value<String> frequency;
+  final Value<String?> targetTime;
+  final Value<int> currentStreak;
+  final Value<int> longestStreak;
+  final Value<DateTime?> lastCompletedAt;
+  final Value<bool> isActive;
+  final Value<DateTime> createdAt;
+  const HabitItemsCompanion({
+    this.id = const Value.absent(),
+    this.title = const Value.absent(),
+    this.frequency = const Value.absent(),
+    this.targetTime = const Value.absent(),
+    this.currentStreak = const Value.absent(),
+    this.longestStreak = const Value.absent(),
+    this.lastCompletedAt = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  HabitItemsCompanion.insert({
+    this.id = const Value.absent(),
+    required String title,
+    required String frequency,
+    this.targetTime = const Value.absent(),
+    this.currentStreak = const Value.absent(),
+    this.longestStreak = const Value.absent(),
+    this.lastCompletedAt = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  }) : title = Value(title),
+       frequency = Value(frequency);
+  static Insertable<HabitItem> custom({
+    Expression<int>? id,
+    Expression<String>? title,
+    Expression<String>? frequency,
+    Expression<String>? targetTime,
+    Expression<int>? currentStreak,
+    Expression<int>? longestStreak,
+    Expression<DateTime>? lastCompletedAt,
+    Expression<bool>? isActive,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (title != null) 'title': title,
+      if (frequency != null) 'frequency': frequency,
+      if (targetTime != null) 'target_time': targetTime,
+      if (currentStreak != null) 'current_streak': currentStreak,
+      if (longestStreak != null) 'longest_streak': longestStreak,
+      if (lastCompletedAt != null) 'last_completed_at': lastCompletedAt,
+      if (isActive != null) 'is_active': isActive,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  HabitItemsCompanion copyWith({
+    Value<int>? id,
+    Value<String>? title,
+    Value<String>? frequency,
+    Value<String?>? targetTime,
+    Value<int>? currentStreak,
+    Value<int>? longestStreak,
+    Value<DateTime?>? lastCompletedAt,
+    Value<bool>? isActive,
+    Value<DateTime>? createdAt,
+  }) {
+    return HabitItemsCompanion(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      frequency: frequency ?? this.frequency,
+      targetTime: targetTime ?? this.targetTime,
+      currentStreak: currentStreak ?? this.currentStreak,
+      longestStreak: longestStreak ?? this.longestStreak,
+      lastCompletedAt: lastCompletedAt ?? this.lastCompletedAt,
+      isActive: isActive ?? this.isActive,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (frequency.present) {
+      map['frequency'] = Variable<String>(frequency.value);
+    }
+    if (targetTime.present) {
+      map['target_time'] = Variable<String>(targetTime.value);
+    }
+    if (currentStreak.present) {
+      map['current_streak'] = Variable<int>(currentStreak.value);
+    }
+    if (longestStreak.present) {
+      map['longest_streak'] = Variable<int>(longestStreak.value);
+    }
+    if (lastCompletedAt.present) {
+      map['last_completed_at'] = Variable<DateTime>(lastCompletedAt.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HabitItemsCompanion(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('frequency: $frequency, ')
+          ..write('targetTime: $targetTime, ')
+          ..write('currentStreak: $currentStreak, ')
+          ..write('longestStreak: $longestStreak, ')
+          ..write('lastCompletedAt: $lastCompletedAt, ')
+          ..write('isActive: $isActive, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $HabitLogItemsTable extends HabitLogItems
+    with TableInfo<$HabitLogItemsTable, HabitLogItem> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $HabitLogItemsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _habitIdMeta = const VerificationMeta(
+    'habitId',
+  );
+  @override
+  late final GeneratedColumn<int> habitId = GeneratedColumn<int>(
+    'habit_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES habit_items (id)',
+    ),
+  );
+  static const VerificationMeta _completedAtMeta = const VerificationMeta(
+    'completedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> completedAt = GeneratedColumn<DateTime>(
+    'completed_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, habitId, completedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'habit_log_items';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<HabitLogItem> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('habit_id')) {
+      context.handle(
+        _habitIdMeta,
+        habitId.isAcceptableOrUnknown(data['habit_id']!, _habitIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_habitIdMeta);
+    }
+    if (data.containsKey('completed_at')) {
+      context.handle(
+        _completedAtMeta,
+        completedAt.isAcceptableOrUnknown(
+          data['completed_at']!,
+          _completedAtMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  HabitLogItem map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return HabitLogItem(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      habitId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}habit_id'],
+      )!,
+      completedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}completed_at'],
+      )!,
+    );
+  }
+
+  @override
+  $HabitLogItemsTable createAlias(String alias) {
+    return $HabitLogItemsTable(attachedDatabase, alias);
+  }
+}
+
+class HabitLogItem extends DataClass implements Insertable<HabitLogItem> {
+  final int id;
+  final int habitId;
+  final DateTime completedAt;
+  const HabitLogItem({
+    required this.id,
+    required this.habitId,
+    required this.completedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['habit_id'] = Variable<int>(habitId);
+    map['completed_at'] = Variable<DateTime>(completedAt);
+    return map;
+  }
+
+  HabitLogItemsCompanion toCompanion(bool nullToAbsent) {
+    return HabitLogItemsCompanion(
+      id: Value(id),
+      habitId: Value(habitId),
+      completedAt: Value(completedAt),
+    );
+  }
+
+  factory HabitLogItem.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return HabitLogItem(
+      id: serializer.fromJson<int>(json['id']),
+      habitId: serializer.fromJson<int>(json['habitId']),
+      completedAt: serializer.fromJson<DateTime>(json['completedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'habitId': serializer.toJson<int>(habitId),
+      'completedAt': serializer.toJson<DateTime>(completedAt),
+    };
+  }
+
+  HabitLogItem copyWith({int? id, int? habitId, DateTime? completedAt}) =>
+      HabitLogItem(
+        id: id ?? this.id,
+        habitId: habitId ?? this.habitId,
+        completedAt: completedAt ?? this.completedAt,
+      );
+  HabitLogItem copyWithCompanion(HabitLogItemsCompanion data) {
+    return HabitLogItem(
+      id: data.id.present ? data.id.value : this.id,
+      habitId: data.habitId.present ? data.habitId.value : this.habitId,
+      completedAt: data.completedAt.present
+          ? data.completedAt.value
+          : this.completedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HabitLogItem(')
+          ..write('id: $id, ')
+          ..write('habitId: $habitId, ')
+          ..write('completedAt: $completedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, habitId, completedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is HabitLogItem &&
+          other.id == this.id &&
+          other.habitId == this.habitId &&
+          other.completedAt == this.completedAt);
+}
+
+class HabitLogItemsCompanion extends UpdateCompanion<HabitLogItem> {
+  final Value<int> id;
+  final Value<int> habitId;
+  final Value<DateTime> completedAt;
+  const HabitLogItemsCompanion({
+    this.id = const Value.absent(),
+    this.habitId = const Value.absent(),
+    this.completedAt = const Value.absent(),
+  });
+  HabitLogItemsCompanion.insert({
+    this.id = const Value.absent(),
+    required int habitId,
+    this.completedAt = const Value.absent(),
+  }) : habitId = Value(habitId);
+  static Insertable<HabitLogItem> custom({
+    Expression<int>? id,
+    Expression<int>? habitId,
+    Expression<DateTime>? completedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (habitId != null) 'habit_id': habitId,
+      if (completedAt != null) 'completed_at': completedAt,
+    });
+  }
+
+  HabitLogItemsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? habitId,
+    Value<DateTime>? completedAt,
+  }) {
+    return HabitLogItemsCompanion(
+      id: id ?? this.id,
+      habitId: habitId ?? this.habitId,
+      completedAt: completedAt ?? this.completedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (habitId.present) {
+      map['habit_id'] = Variable<int>(habitId.value);
+    }
+    if (completedAt.present) {
+      map['completed_at'] = Variable<DateTime>(completedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HabitLogItemsCompanion(')
+          ..write('id: $id, ')
+          ..write('habitId: $habitId, ')
+          ..write('completedAt: $completedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $TaskItemsTable taskItems = $TaskItemsTable(this);
   late final $EventItemsTable eventItems = $EventItemsTable(this);
+  late final $NoteItemsTable noteItems = $NoteItemsTable(this);
   late final $MessagesTable messages = $MessagesTable(this);
+  late final $HabitItemsTable habitItems = $HabitItemsTable(this);
+  late final $HabitLogItemsTable habitLogItems = $HabitLogItemsTable(this);
   late final TaskDao taskDao = TaskDao(this as AppDatabase);
   late final EventDao eventDao = EventDao(this as AppDatabase);
+  late final NoteDao noteDao = NoteDao(this as AppDatabase);
   late final MessageDao messageDao = MessageDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
@@ -1366,7 +2656,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     taskItems,
     eventItems,
+    noteItems,
     messages,
+    habitItems,
+    habitLogItems,
   ];
 }
 
@@ -1829,6 +3122,234 @@ typedef $$EventItemsTableProcessedTableManager =
       EventItem,
       PrefetchHooks Function()
     >;
+typedef $$NoteItemsTableCreateCompanionBuilder =
+    NoteItemsCompanion Function({
+      Value<int> id,
+      Value<String> title,
+      required String content,
+      Value<String?> tags,
+      Value<DateTime?> extractedDate,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+    });
+typedef $$NoteItemsTableUpdateCompanionBuilder =
+    NoteItemsCompanion Function({
+      Value<int> id,
+      Value<String> title,
+      Value<String> content,
+      Value<String?> tags,
+      Value<DateTime?> extractedDate,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+    });
+
+class $$NoteItemsTableFilterComposer
+    extends Composer<_$AppDatabase, $NoteItemsTable> {
+  $$NoteItemsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tags => $composableBuilder(
+    column: $table.tags,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get extractedDate => $composableBuilder(
+    column: $table.extractedDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$NoteItemsTableOrderingComposer
+    extends Composer<_$AppDatabase, $NoteItemsTable> {
+  $$NoteItemsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tags => $composableBuilder(
+    column: $table.tags,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get extractedDate => $composableBuilder(
+    column: $table.extractedDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$NoteItemsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $NoteItemsTable> {
+  $$NoteItemsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get content =>
+      $composableBuilder(column: $table.content, builder: (column) => column);
+
+  GeneratedColumn<String> get tags =>
+      $composableBuilder(column: $table.tags, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get extractedDate => $composableBuilder(
+    column: $table.extractedDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$NoteItemsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $NoteItemsTable,
+          NoteItem,
+          $$NoteItemsTableFilterComposer,
+          $$NoteItemsTableOrderingComposer,
+          $$NoteItemsTableAnnotationComposer,
+          $$NoteItemsTableCreateCompanionBuilder,
+          $$NoteItemsTableUpdateCompanionBuilder,
+          (NoteItem, BaseReferences<_$AppDatabase, $NoteItemsTable, NoteItem>),
+          NoteItem,
+          PrefetchHooks Function()
+        > {
+  $$NoteItemsTableTableManager(_$AppDatabase db, $NoteItemsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$NoteItemsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$NoteItemsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$NoteItemsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> content = const Value.absent(),
+                Value<String?> tags = const Value.absent(),
+                Value<DateTime?> extractedDate = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => NoteItemsCompanion(
+                id: id,
+                title: title,
+                content: content,
+                tags: tags,
+                extractedDate: extractedDate,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                required String content,
+                Value<String?> tags = const Value.absent(),
+                Value<DateTime?> extractedDate = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => NoteItemsCompanion.insert(
+                id: id,
+                title: title,
+                content: content,
+                tags: tags,
+                extractedDate: extractedDate,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$NoteItemsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $NoteItemsTable,
+      NoteItem,
+      $$NoteItemsTableFilterComposer,
+      $$NoteItemsTableOrderingComposer,
+      $$NoteItemsTableAnnotationComposer,
+      $$NoteItemsTableCreateCompanionBuilder,
+      $$NoteItemsTableUpdateCompanionBuilder,
+      (NoteItem, BaseReferences<_$AppDatabase, $NoteItemsTable, NoteItem>),
+      NoteItem,
+      PrefetchHooks Function()
+    >;
 typedef $$MessagesTableCreateCompanionBuilder =
     MessagesCompanion Function({
       Value<int> id,
@@ -2040,6 +3561,668 @@ typedef $$MessagesTableProcessedTableManager =
       Message,
       PrefetchHooks Function()
     >;
+typedef $$HabitItemsTableCreateCompanionBuilder =
+    HabitItemsCompanion Function({
+      Value<int> id,
+      required String title,
+      required String frequency,
+      Value<String?> targetTime,
+      Value<int> currentStreak,
+      Value<int> longestStreak,
+      Value<DateTime?> lastCompletedAt,
+      Value<bool> isActive,
+      Value<DateTime> createdAt,
+    });
+typedef $$HabitItemsTableUpdateCompanionBuilder =
+    HabitItemsCompanion Function({
+      Value<int> id,
+      Value<String> title,
+      Value<String> frequency,
+      Value<String?> targetTime,
+      Value<int> currentStreak,
+      Value<int> longestStreak,
+      Value<DateTime?> lastCompletedAt,
+      Value<bool> isActive,
+      Value<DateTime> createdAt,
+    });
+
+final class $$HabitItemsTableReferences
+    extends BaseReferences<_$AppDatabase, $HabitItemsTable, HabitItem> {
+  $$HabitItemsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$HabitLogItemsTable, List<HabitLogItem>>
+  _habitLogItemsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.habitLogItems,
+    aliasName: $_aliasNameGenerator(db.habitItems.id, db.habitLogItems.habitId),
+  );
+
+  $$HabitLogItemsTableProcessedTableManager get habitLogItemsRefs {
+    final manager = $$HabitLogItemsTableTableManager(
+      $_db,
+      $_db.habitLogItems,
+    ).filter((f) => f.habitId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_habitLogItemsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$HabitItemsTableFilterComposer
+    extends Composer<_$AppDatabase, $HabitItemsTable> {
+  $$HabitItemsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get frequency => $composableBuilder(
+    column: $table.frequency,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get targetTime => $composableBuilder(
+    column: $table.targetTime,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get currentStreak => $composableBuilder(
+    column: $table.currentStreak,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get longestStreak => $composableBuilder(
+    column: $table.longestStreak,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastCompletedAt => $composableBuilder(
+    column: $table.lastCompletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> habitLogItemsRefs(
+    Expression<bool> Function($$HabitLogItemsTableFilterComposer f) f,
+  ) {
+    final $$HabitLogItemsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.habitLogItems,
+      getReferencedColumn: (t) => t.habitId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$HabitLogItemsTableFilterComposer(
+            $db: $db,
+            $table: $db.habitLogItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$HabitItemsTableOrderingComposer
+    extends Composer<_$AppDatabase, $HabitItemsTable> {
+  $$HabitItemsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get frequency => $composableBuilder(
+    column: $table.frequency,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get targetTime => $composableBuilder(
+    column: $table.targetTime,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get currentStreak => $composableBuilder(
+    column: $table.currentStreak,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get longestStreak => $composableBuilder(
+    column: $table.longestStreak,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastCompletedAt => $composableBuilder(
+    column: $table.lastCompletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$HabitItemsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $HabitItemsTable> {
+  $$HabitItemsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get frequency =>
+      $composableBuilder(column: $table.frequency, builder: (column) => column);
+
+  GeneratedColumn<String> get targetTime => $composableBuilder(
+    column: $table.targetTime,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get currentStreak => $composableBuilder(
+    column: $table.currentStreak,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get longestStreak => $composableBuilder(
+    column: $table.longestStreak,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get lastCompletedAt => $composableBuilder(
+    column: $table.lastCompletedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  Expression<T> habitLogItemsRefs<T extends Object>(
+    Expression<T> Function($$HabitLogItemsTableAnnotationComposer a) f,
+  ) {
+    final $$HabitLogItemsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.habitLogItems,
+      getReferencedColumn: (t) => t.habitId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$HabitLogItemsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.habitLogItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$HabitItemsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $HabitItemsTable,
+          HabitItem,
+          $$HabitItemsTableFilterComposer,
+          $$HabitItemsTableOrderingComposer,
+          $$HabitItemsTableAnnotationComposer,
+          $$HabitItemsTableCreateCompanionBuilder,
+          $$HabitItemsTableUpdateCompanionBuilder,
+          (HabitItem, $$HabitItemsTableReferences),
+          HabitItem,
+          PrefetchHooks Function({bool habitLogItemsRefs})
+        > {
+  $$HabitItemsTableTableManager(_$AppDatabase db, $HabitItemsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$HabitItemsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$HabitItemsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$HabitItemsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> frequency = const Value.absent(),
+                Value<String?> targetTime = const Value.absent(),
+                Value<int> currentStreak = const Value.absent(),
+                Value<int> longestStreak = const Value.absent(),
+                Value<DateTime?> lastCompletedAt = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => HabitItemsCompanion(
+                id: id,
+                title: title,
+                frequency: frequency,
+                targetTime: targetTime,
+                currentStreak: currentStreak,
+                longestStreak: longestStreak,
+                lastCompletedAt: lastCompletedAt,
+                isActive: isActive,
+                createdAt: createdAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String title,
+                required String frequency,
+                Value<String?> targetTime = const Value.absent(),
+                Value<int> currentStreak = const Value.absent(),
+                Value<int> longestStreak = const Value.absent(),
+                Value<DateTime?> lastCompletedAt = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => HabitItemsCompanion.insert(
+                id: id,
+                title: title,
+                frequency: frequency,
+                targetTime: targetTime,
+                currentStreak: currentStreak,
+                longestStreak: longestStreak,
+                lastCompletedAt: lastCompletedAt,
+                isActive: isActive,
+                createdAt: createdAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$HabitItemsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({habitLogItemsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (habitLogItemsRefs) db.habitLogItems,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (habitLogItemsRefs)
+                    await $_getPrefetchedData<
+                      HabitItem,
+                      $HabitItemsTable,
+                      HabitLogItem
+                    >(
+                      currentTable: table,
+                      referencedTable: $$HabitItemsTableReferences
+                          ._habitLogItemsRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$HabitItemsTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).habitLogItemsRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.habitId == item.id),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$HabitItemsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $HabitItemsTable,
+      HabitItem,
+      $$HabitItemsTableFilterComposer,
+      $$HabitItemsTableOrderingComposer,
+      $$HabitItemsTableAnnotationComposer,
+      $$HabitItemsTableCreateCompanionBuilder,
+      $$HabitItemsTableUpdateCompanionBuilder,
+      (HabitItem, $$HabitItemsTableReferences),
+      HabitItem,
+      PrefetchHooks Function({bool habitLogItemsRefs})
+    >;
+typedef $$HabitLogItemsTableCreateCompanionBuilder =
+    HabitLogItemsCompanion Function({
+      Value<int> id,
+      required int habitId,
+      Value<DateTime> completedAt,
+    });
+typedef $$HabitLogItemsTableUpdateCompanionBuilder =
+    HabitLogItemsCompanion Function({
+      Value<int> id,
+      Value<int> habitId,
+      Value<DateTime> completedAt,
+    });
+
+final class $$HabitLogItemsTableReferences
+    extends BaseReferences<_$AppDatabase, $HabitLogItemsTable, HabitLogItem> {
+  $$HabitLogItemsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $HabitItemsTable _habitIdTable(_$AppDatabase db) =>
+      db.habitItems.createAlias(
+        $_aliasNameGenerator(db.habitLogItems.habitId, db.habitItems.id),
+      );
+
+  $$HabitItemsTableProcessedTableManager get habitId {
+    final $_column = $_itemColumn<int>('habit_id')!;
+
+    final manager = $$HabitItemsTableTableManager(
+      $_db,
+      $_db.habitItems,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_habitIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$HabitLogItemsTableFilterComposer
+    extends Composer<_$AppDatabase, $HabitLogItemsTable> {
+  $$HabitLogItemsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$HabitItemsTableFilterComposer get habitId {
+    final $$HabitItemsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.habitId,
+      referencedTable: $db.habitItems,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$HabitItemsTableFilterComposer(
+            $db: $db,
+            $table: $db.habitItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$HabitLogItemsTableOrderingComposer
+    extends Composer<_$AppDatabase, $HabitLogItemsTable> {
+  $$HabitLogItemsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$HabitItemsTableOrderingComposer get habitId {
+    final $$HabitItemsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.habitId,
+      referencedTable: $db.habitItems,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$HabitItemsTableOrderingComposer(
+            $db: $db,
+            $table: $db.habitItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$HabitLogItemsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $HabitLogItemsTable> {
+  $$HabitLogItemsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => column,
+  );
+
+  $$HabitItemsTableAnnotationComposer get habitId {
+    final $$HabitItemsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.habitId,
+      referencedTable: $db.habitItems,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$HabitItemsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.habitItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$HabitLogItemsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $HabitLogItemsTable,
+          HabitLogItem,
+          $$HabitLogItemsTableFilterComposer,
+          $$HabitLogItemsTableOrderingComposer,
+          $$HabitLogItemsTableAnnotationComposer,
+          $$HabitLogItemsTableCreateCompanionBuilder,
+          $$HabitLogItemsTableUpdateCompanionBuilder,
+          (HabitLogItem, $$HabitLogItemsTableReferences),
+          HabitLogItem,
+          PrefetchHooks Function({bool habitId})
+        > {
+  $$HabitLogItemsTableTableManager(_$AppDatabase db, $HabitLogItemsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$HabitLogItemsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$HabitLogItemsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$HabitLogItemsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> habitId = const Value.absent(),
+                Value<DateTime> completedAt = const Value.absent(),
+              }) => HabitLogItemsCompanion(
+                id: id,
+                habitId: habitId,
+                completedAt: completedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int habitId,
+                Value<DateTime> completedAt = const Value.absent(),
+              }) => HabitLogItemsCompanion.insert(
+                id: id,
+                habitId: habitId,
+                completedAt: completedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$HabitLogItemsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({habitId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (habitId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.habitId,
+                                referencedTable: $$HabitLogItemsTableReferences
+                                    ._habitIdTable(db),
+                                referencedColumn: $$HabitLogItemsTableReferences
+                                    ._habitIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$HabitLogItemsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $HabitLogItemsTable,
+      HabitLogItem,
+      $$HabitLogItemsTableFilterComposer,
+      $$HabitLogItemsTableOrderingComposer,
+      $$HabitLogItemsTableAnnotationComposer,
+      $$HabitLogItemsTableCreateCompanionBuilder,
+      $$HabitLogItemsTableUpdateCompanionBuilder,
+      (HabitLogItem, $$HabitLogItemsTableReferences),
+      HabitLogItem,
+      PrefetchHooks Function({bool habitId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -2048,6 +4231,12 @@ class $AppDatabaseManager {
       $$TaskItemsTableTableManager(_db, _db.taskItems);
   $$EventItemsTableTableManager get eventItems =>
       $$EventItemsTableTableManager(_db, _db.eventItems);
+  $$NoteItemsTableTableManager get noteItems =>
+      $$NoteItemsTableTableManager(_db, _db.noteItems);
   $$MessagesTableTableManager get messages =>
       $$MessagesTableTableManager(_db, _db.messages);
+  $$HabitItemsTableTableManager get habitItems =>
+      $$HabitItemsTableTableManager(_db, _db.habitItems);
+  $$HabitLogItemsTableTableManager get habitLogItems =>
+      $$HabitLogItemsTableTableManager(_db, _db.habitLogItems);
 }

@@ -12,6 +12,10 @@ class SpecialistBadge extends StatelessWidget {
       Intent.summarize => Colors.orange,
       Intent.task => Colors.blue,
       Intent.event => Colors.purple,
+      Intent.note => Colors.amber,
+      Intent.habit => Colors.green,
+      Intent.draft => Colors.indigo,
+      Intent.search => Colors.pink,
       null => Colors.grey,
     };
   }

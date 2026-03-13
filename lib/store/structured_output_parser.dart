@@ -29,6 +29,25 @@ class EventOutput extends ParsedOutput {
   });
 }
 
+class NoteOutput extends ParsedOutput {
+  final String title;
+  final String content;
+  final List<String>? tags;
+  const NoteOutput({required this.title, required this.content, this.tags});
+}
+
+class HabitOutput extends ParsedOutput {
+  final String title;
+  final String frequency;
+  final String? targetTime;
+  const HabitOutput({required this.title, required this.frequency, this.targetTime});
+}
+
+class DraftOutput extends ParsedOutput {
+  final String content;
+  const DraftOutput({required this.content});
+}
+
 class NoOutput extends ParsedOutput {
   const NoOutput();
 }
@@ -76,6 +95,28 @@ class StructuredOutputParser {
           endTime: map['endTime'] as String?,
           recurrence: map['recurrence'] as String?,
           notes: map['notes'] as String?,
+        );
+      }
+
+      if (type == 'note') {
+        return NoteOutput(
+          title: map['title'] as String? ?? '',
+          content: map['content'] as String? ?? '',
+          tags: (map['tags'] as List<dynamic>?)?.cast<String>(),
+        );
+      }
+
+      if (type == 'habit') {
+        return HabitOutput(
+          title: map['title'] as String? ?? '',
+          frequency: map['frequency'] as String? ?? 'daily',
+          targetTime: map['targetTime'] as String?,
+        );
+      }
+
+      if (type == 'draft') {
+        return DraftOutput(
+          content: map['content'] as String? ?? '',
         );
       }
 

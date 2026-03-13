@@ -4,6 +4,8 @@ import 'package:drift/native.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 
+import 'habit_dao.dart';
+
 part 'database.g.dart';
 
 // ─── Tables ───
@@ -191,6 +193,8 @@ class AppDatabase extends _$AppDatabase {
       }
     },
   );
+
+  HabitDao get habitDao => HabitDao(this);
 }
 
 LazyDatabase _openConnection() {

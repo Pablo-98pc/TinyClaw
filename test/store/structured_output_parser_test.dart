@@ -50,4 +50,54 @@ void main() {
       expect(result, isA<NoOutput>());
     });
   });
+
+  group('NoteOutput', () {
+    test('parses note JSON from fenced block', () {
+      const text = '''Here you go:
+```json
+{"type":"note","title":"Plumber","content":"Call 555-1234 for kitchen leak","tags":["phone","home"]}
+```''';
+      final result = StructuredOutputParser.parse(text);
+      expect(result, isA<NoteOutput>());
+      final note = result as NoteOutput;
+      expect(note.title, 'Plumber');
+      expect(note.content, 'Call 555-1234 for kitchen leak');
+      expect(note.tags, ['phone', 'home']);
+    });
+
+    test('parses note with null tags', () {
+      const text = '{"type":"note","title":"Idea","content":"Build a robot"}';
+      final result = StructuredOutputParser.parse(text);
+      expect(result, isA<NoteOutput>());
+      expect((result as NoteOutput).tags, isNull);
+    });
+  });
+
+  group('HabitOutput', () {
+    test('parses habit JSON', () {
+      const text = '{"type":"habit","title":"Drink water","frequency":"every_2_hours","targetTime":null}';
+      final result = StructuredOutputParser.parse(text);
+      expect(result, isA<HabitOutput>());
+      final habit = result as HabitOutput;
+      expect(habit.title, 'Drink water');
+      expect(habit.frequency, 'every_2_hours');
+      expect(habit.targetTime, isNull);
+    });
+
+    test('parses habit with target time', () {
+      const text = '{"type":"habit","title":"Meditate","frequency":"daily","targetTime":"07:00"}';
+      final result = StructuredOutputParser.parse(text);
+      expect(result, isA<HabitOutput>());
+      expect((result as HabitOutput).targetTime, '07:00');
+    });
+  });
+
+  group('DraftOutput', () {
+    test('parses draft JSON', () {
+      const text = '{"type":"draft","content":"Dear John, thank you for the invitation..."}';
+      final result = StructuredOutputParser.parse(text);
+      expect(result, isA<DraftOutput>());
+      expect((result as DraftOutput).content, 'Dear John, thank you for the invitation...');
+    });
+  });
 }

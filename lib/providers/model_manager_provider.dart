@@ -14,6 +14,21 @@ final modelManagerProvider = Provider<ModelManager>((ref) {
   manager.register(Intent.summarize, StubSpecialist(id: 'stub-summarize', intent: Intent.summarize, memoryFootprint: 100));
   manager.register(Intent.task, StubSpecialist(id: 'stub-task', intent: Intent.task, memoryFootprint: 100));
   manager.register(Intent.event, StubSpecialist(id: 'stub-event', intent: Intent.event, memoryFootprint: 100));
+  manager.register(Intent.note, StubSpecialist(
+    id: 'stub-note',
+    intent: Intent.note,
+    memoryFootprint: 100,
+  ));
+  manager.register(Intent.habit, StubSpecialist(
+    id: 'stub-habit',
+    intent: Intent.habit,
+    memoryFootprint: 100,
+  ));
+  manager.register(Intent.draft, StubSpecialist(
+    id: 'stub-draft',
+    intent: Intent.draft,
+    memoryFootprint: 100,
+  ));
 
   // Pin the chat specialist (always available)
   manager.pin(Intent.chat);

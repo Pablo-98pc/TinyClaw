@@ -10,7 +10,6 @@ import 'package:tinyclaw/store/database.dart';
 import 'package:tinyclaw/specialists/stub_specialist.dart';
 import 'package:tinyclaw/dispatcher/stub_dispatcher.dart';
 import 'package:tinyclaw/core/model_manager.dart';
-import 'package:tinyclaw/core/dispatcher.dart';
 
 void main() {
   group('ChatNotifier', () {
@@ -66,6 +65,39 @@ void main() {
 
       final events = await db.eventDao.allEvents();
       expect(events.length, 1);
+    });
+
+    test('send creates note from structured output', () async {
+      final notifier = container.read(chatNotifierProvider.notifier);
+      await notifier.send('Note that the wifi password is blue42');
+
+      final notes = await db.noteDao.watchAllNotes().first;
+      expect(notes.length, 1);
+    });
+
+    test('send creates habit from structured output', () async {
+      final notifier = container.read(chatNotifierProvider.notifier);
+      await notifier.send('Track my daily pushups');
+
+      final habits = await db.habitDao.allHabits();
+      expect(habits.length, 1);
+    });
+
+    test('search intent queries database directly', () async {
+      // Insert a note to search for
+      await db.into(db.noteItems).insert(NoteItemsCompanion.insert(
+        content: 'The plumber number is 555-1234',
+        title: Value('Plumber'),
+      ));
+
+      final notifier = container.read(chatNotifierProvider.notifier);
+      await notifier.send('Find plumber');
+
+      final messages = await db.messageDao.allMessages();
+      // Should have user message + search results
+      expect(messages.length, 2);
+      expect(messages[1].content, contains('Plumber'));
+      expect(messages[1].specialistBadge, 'search');
     });
 
     test('handles specialist error gracefully', () async {

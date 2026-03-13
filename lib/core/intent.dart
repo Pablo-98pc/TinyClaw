@@ -1,9 +1,13 @@
-/// The four intent categories the dispatcher can classify user input into.
+/// The eight intent categories the dispatcher can classify user input into.
 enum Intent {
   chat,
   summarize,
   task,
-  event;
+  event,
+  note,
+  habit,
+  draft,
+  search;
 
   /// Convert from string (for JSON/DB round-trips).
   static Intent? fromString(String value) {
